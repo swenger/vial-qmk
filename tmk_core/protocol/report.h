@@ -193,6 +193,33 @@ typedef struct {
     uint32_t usage;
 } PACKED report_programmable_button_t;
 
+/* Telephony buttons, in the order of TelephonyReport in usb_descriptor.c */
+enum telephony_button_bits {
+    TELEPHONY_HOOK_SWITCH   = (1 << 0),
+    TELEPHONY_FLASH         = (1 << 1),
+    TELEPHONY_HOLD          = (1 << 2),
+    TELEPHONY_REDIAL        = (1 << 3),
+    TELEPHONY_DROP          = (1 << 4),
+    TELEPHONY_SPEAKER_PHONE = (1 << 5),
+    TELEPHONY_PHONE_MUTE    = (1 << 6),
+};
+
+/* Telephony LEDs, set by the host */
+enum telephony_led_bits {
+    TELEPHONY_LED_MUTE            = (1 << 0),
+    TELEPHONY_LED_OFF_HOOK        = (1 << 1),
+    TELEPHONY_LED_RING            = (1 << 2),
+    TELEPHONY_LED_MESSAGE_WAITING = (1 << 3),
+    TELEPHONY_LED_SPEAKER         = (1 << 4),
+    TELEPHONY_LED_HEAD_SET        = (1 << 5),
+    TELEPHONY_LED_HOLD            = (1 << 6),
+    TELEPHONY_LED_MICROPHONE      = (1 << 7),
+};
+
+typedef struct {
+    uint8_t buttons;
+} PACKED report_telephony_t;
+
 #ifdef MOUSE_EXTENDED_REPORT
 #    define MOUSE_REPORT_XY_MIN INT16_MIN
 #    define MOUSE_REPORT_XY_MAX INT16_MAX

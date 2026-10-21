@@ -473,6 +473,42 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM RawReport[] = {
 };
 #endif
 
+#ifdef TELEPHONY_ENABLE
+// Bit order must match enum telephony_button_bits and enum telephony_led_bits in report.h.
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM TelephonyReport[] = {
+    HID_RI_USAGE_PAGE(8, 0x0B),        // Telephony
+    HID_RI_USAGE(8, 0x05),             // Headset
+    HID_RI_COLLECTION(8, 0x01),        // Application
+        HID_RI_LOGICAL_MINIMUM(8, 0x00),
+        HID_RI_LOGICAL_MAXIMUM(8, 0x01),
+        HID_RI_REPORT_SIZE(8, 0x01),
+        HID_RI_USAGE(8, 0x20),         // Hook Switch
+        HID_RI_USAGE(8, 0x21),         // Flash
+        HID_RI_USAGE(8, 0x23),         // Hold
+        HID_RI_USAGE(8, 0x24),         // Redial
+        HID_RI_USAGE(8, 0x26),         // Drop
+        HID_RI_USAGE(8, 0x2B),         // Speaker Phone
+        HID_RI_USAGE(8, 0x2F),         // Phone Mute
+        HID_RI_REPORT_COUNT(8, 0x07),
+        HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
+        HID_RI_REPORT_COUNT(8, 0x01),
+        HID_RI_INPUT(8, HID_IOF_CONSTANT),
+
+        HID_RI_USAGE_PAGE(8, 0x08),    // LED
+        HID_RI_USAGE(8, 0x09),         // Mute
+        HID_RI_USAGE(8, 0x17),         // Off-Hook
+        HID_RI_USAGE(8, 0x18),         // Ring
+        HID_RI_USAGE(8, 0x19),         // Message Waiting
+        HID_RI_USAGE(8, 0x1E),         // Speaker
+        HID_RI_USAGE(8, 0x1F),         // Head Set
+        HID_RI_USAGE(8, 0x20),         // Hold
+        HID_RI_USAGE(8, 0x21),         // Microphone
+        HID_RI_REPORT_COUNT(8, 0x08),
+        HID_RI_OUTPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE | HID_IOF_NON_VOLATILE),
+    HID_RI_END_COLLECTION(0),
+};
+#endif
+
 #ifdef CONSOLE_ENABLE
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM ConsoleReport[] = {
     HID_RI_USAGE_PAGE(16, 0xFF31), // Vendor Defined (PJRC Teensy compatible)
@@ -1097,6 +1133,46 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .PollingIntervalMS      = USB_POLLING_INTERVAL_MS
     },
 #endif
+
+#ifdef TELEPHONY_ENABLE
+    /*
+     * Telephony
+     */
+    .Telephony_Interface = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Interface_t),
+            .Type               = DTYPE_Interface
+        },
+        .InterfaceNumber        = TELEPHONY_INTERFACE,
+        .AlternateSetting       = 0x00,
+        .TotalEndpoints         = 1,
+        .Class                  = HID_CSCP_HIDClass,
+        .SubClass               = HID_CSCP_NonBootSubclass,
+        .Protocol               = HID_CSCP_NonBootProtocol,
+        .InterfaceStrIndex      = NO_DESCRIPTOR
+    },
+    .Telephony_HID = {
+        .Header = {
+            .Size               = sizeof(USB_HID_Descriptor_HID_t),
+            .Type               = HID_DTYPE_HID
+        },
+        .HIDSpec                = VERSION_BCD(1, 1, 1),
+        .CountryCode            = 0x00,
+        .TotalReportDescriptors = 1,
+        .HIDReportType          = HID_DTYPE_Report,
+        .HIDReportLength        = sizeof(TelephonyReport)
+    },
+    .Telephony_INEndpoint = {
+        .Header = {
+            .Size               = sizeof(USB_Descriptor_Endpoint_t),
+            .Type               = DTYPE_Endpoint
+        },
+        .EndpointAddress        = (ENDPOINT_DIR_IN | TELEPHONY_IN_EPNUM),
+        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+        .EndpointSize           = TELEPHONY_EPSIZE,
+        .PollingIntervalMS      = USB_POLLING_INTERVAL_MS
+    },
+#endif
 };
 
 /*
@@ -1280,6 +1356,14 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                     break;
 #endif
 
+#ifdef TELEPHONY_ENABLE
+                case TELEPHONY_INTERFACE:
+                    Address = &ConfigurationDescriptor.Telephony_HID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+
+                    break;
+#endif
+
 #ifdef CONSOLE_ENABLE
                 case CONSOLE_INTERFACE:
                     Address = &ConfigurationDescriptor.Console_HID;
@@ -1333,6 +1417,14 @@ uint16_t get_usb_descriptor(const uint16_t wValue, const uint16_t wIndex, const 
                 case RAW_INTERFACE:
                     Address = &RawReport;
                     Size    = sizeof(RawReport);
+
+                    break;
+#endif
+
+#ifdef TELEPHONY_ENABLE
+                case TELEPHONY_INTERFACE:
+                    Address = &TelephonyReport;
+                    Size    = sizeof(TelephonyReport);
 
                     break;
 #endif

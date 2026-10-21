@@ -302,6 +302,25 @@ void host_programmable_button_send(uint32_t data) {
 
 __attribute__((weak)) void send_programmable_button(report_programmable_button_t *report) {}
 
+#ifdef TELEPHONY_ENABLE
+void host_telephony_send(uint8_t buttons) {
+    report_telephony_t report = {
+        .buttons = buttons,
+    };
+
+    send_telephony(&report);
+}
+
+uint8_t host_telephony_leds(void) {
+    return telephony_leds();
+}
+#endif
+
+__attribute__((weak)) void    send_telephony(report_telephony_t *report) {}
+__attribute__((weak)) uint8_t telephony_leds(void) {
+    return 0;
+}
+
 #ifdef RAW_ENABLE
 void host_raw_hid_send(uint8_t *data, uint8_t length) {
     host_driver_t *driver = host_get_active_driver();

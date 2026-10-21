@@ -52,6 +52,7 @@ GENERIC_FEATURES = \
     SPACE_CADET \
     SWAP_HANDS \
     TAP_DANCE \
+    TELEPHONY \
     TRI_LAYER \
     VIA \
     VIRTSER \

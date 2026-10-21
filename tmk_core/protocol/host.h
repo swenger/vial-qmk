@@ -41,6 +41,8 @@ void    host_mouse_send(report_mouse_t *report);
 void    host_system_send(uint16_t usage);
 void    host_consumer_send(uint16_t usage);
 void    host_programmable_button_send(uint32_t data);
+void    host_telephony_send(uint8_t buttons);
+uint8_t host_telephony_leds(void);
 void    host_raw_hid_send(uint8_t *data, uint8_t length);
 
 uint16_t host_last_system_usage(void);

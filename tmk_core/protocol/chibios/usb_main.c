@@ -258,6 +258,10 @@ static void set_led_transfer_cb(USBDriver *usbp) {
     }
 }
 
+#ifdef TELEPHONY_ENABLE
+static uint8_t _Alignas(4) telephony_led_state = 0;
+#endif
+
 static bool usb_requests_hook_cb(USBDriver *usbp) {
     usb_control_request_t *setup = (usb_control_request_t *)usbp->setup;
 
@@ -291,6 +295,11 @@ static bool usb_requests_hook_cb(USBDriver *usbp) {
 #endif
                                 usbSetupTransfer(usbp, set_report_buf, sizeof(set_report_buf), set_led_transfer_cb);
                                 return true;
+#ifdef TELEPHONY_ENABLE
+                            case TELEPHONY_INTERFACE:
+                                usbSetupTransfer(usbp, &telephony_led_state, sizeof(telephony_led_state), NULL);
+                                return true;
+#endif
                         }
                         break;
                     case HID_REQ_SetProtocol:
@@ -500,6 +509,16 @@ void send_digitizer(report_digitizer_t *report) {
     send_report(USB_ENDPOINT_IN_DIGITIZER, report, sizeof(report_digitizer_t));
 #endif
 }
+
+#ifdef TELEPHONY_ENABLE
+void send_telephony(report_telephony_t *report) {
+    send_report(USB_ENDPOINT_IN_TELEPHONY, report, sizeof(report_telephony_t));
+}
+
+uint8_t telephony_leds(void) {
+    return telephony_led_state;
+}
+#endif
 
 /* ---------------------------------------------------------
  *                   Console functions
