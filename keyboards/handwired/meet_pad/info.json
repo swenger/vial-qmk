@@ -1,0 +1,26 @@
+{
+    "keyboard_name": "Meet Pad",
+    "url": "",
+    "maintainer": "you",
+    "manufacturer": "handwired",
+    "processor": "RP2040",
+    "bootloader": "rp2040",
+    "usb": {
+        "vid": "0xFEED",
+        "pid": "0x4D50",
+        "device_version": "0.0.1"
+    },
+    "matrix_pins": {
+        "direct": [
+            ["GP2", "GP3"]
+        ]
+    },
+    "layouts": {
+        "LAYOUT": {
+            "layout": [
+                {"label": "Mute", "matrix": [0, 0], "x": 0, "y": 0},
+                {"label": "Call", "matrix": [0, 1], "x": 1, "y": 0}
+            ]
+        }
+    }
+}

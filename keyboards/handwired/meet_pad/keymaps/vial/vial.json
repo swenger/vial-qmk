@@ -1,0 +1,16 @@
+{
+    "name": "Meet Pad",
+    "vendorId": "0xFEED",
+    "productId": "0x4D50",
+    "lighting": "none",
+    "customKeycodes": [
+        {"name": "Meet\nMute", "title": "Toggle Google Meet mute", "shortName": "MEET_MUTE"},
+        {"name": "Meet\nCall", "title": "Answer / hang up Google Meet call", "shortName": "MEET_CALL"}
+    ],
+    "matrix": {"rows": 1, "cols": 2},
+    "layouts": {
+        "keymap": [
+            ["0,0", "0,1"]
+        ]
+    }
+}
